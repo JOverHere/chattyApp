@@ -15,6 +15,20 @@ handleKeyPress = event => {
    }
  }
 
+
+// handleKeyPressTwo = event => {
+//    if (event.key === "Enter"){
+
+//     const receivedUsername = {
+//       username: event.target.value,
+//       content: document.getElementById("chatbar-message").value
+//     }
+//      this.props.addMessage(receivedUsername);
+//      event.target.value = "";
+//    }
+//  }
+
+
   render(){
     return(
       <footer className="chatbar">
@@ -22,10 +36,12 @@ handleKeyPress = event => {
         className="chatbar-username"
         id="chatbar-username"
         placeholder="Your Name (Optional)"
-        defaultValue={this.props.currentUser}
+        value={this.props.currentUser}
+        onChange={this.props.onNameChange}
         />
         <input
         className="chatbar-message"
+        id="chatbar-message"
         placeholder="Type a message and hit ENTER"
         onKeyPress={this.handleKeyPress} />
       </footer>

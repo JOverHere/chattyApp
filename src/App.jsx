@@ -9,14 +9,15 @@ class App extends Component {
     super(props);
     this.state = {
       id: [],
-      currentUser: {},
+      currentUser: {name: "Joe"},
       messages: [] // messages coming from the server will be stored here as they arrive
+
     };
   }
 
 addMessage = content => {
   const message = {
-    username: content.username,
+    username: this.state.currentUser.name,
     content:content.content
   };
    // const messages = this.state.messages.concat(message)
@@ -24,7 +25,10 @@ addMessage = content => {
    this.mySocket.send(JSON.stringify(message));
 }
 
-
+handleNameChange = (changeValue) => {
+  const updatedName = changeValue.target.value;
+  this.setState({currentUser: {name: updatedName}})
+}
 
 componentDidMount() {
   console.log("componentDidMount <App />");
@@ -38,18 +42,20 @@ componentDidMount() {
 
   this.mySocket.onmessage = (event) => {
     const newMessage = JSON.parse(event.data);
-    console.log(newMessage);
+
     const updatedMessages = this.state.messages.concat(newMessage)
     this.setState({messages: updatedMessages})
+
  }
 }
+
 
   render() {
     return (
       <div>
   <NavBar/>
   <MessageList messages={this.state.messages}/>
-  <ChatBar currentUser={this.state.currentUser.name} addMessage={this.addMessage}/>
+  <ChatBar currentUser={this.state.currentUser.name} addMessage={this.addMessage} onNameChange={this.handleNameChange}/>
   </div>
     );
   }
