@@ -27,16 +27,26 @@ class App extends Component {
 addMessage = content => {
   const message = {
     id: this.state.messages.length + 2,
-    username: this.state.currentUser.name,
-    content:content
+    username: content.username,
+    content:content.content
   };
-   const messages = this.state.messages.concat(message)
-   this.setState({messages: messages})
+   // const messages = this.state.messages.concat(message)
+   // this.setState({messages: messages})
+   this.mySocket.send(JSON.stringify(message));
 }
+
 
 
 componentDidMount() {
   console.log("componentDidMount <App />");
+
+  this.mySocket = new WebSocket("ws://localhost:3001");
+  this.mySocket.onopen = function (event) {
+  // this.mySocket.send(messages);
+    console.log("connected!")
+
+  };
+
   setTimeout(() => {
     console.log("Simulating incoming message");
     // Add a new message to the list of messages in the data store
