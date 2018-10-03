@@ -6,7 +6,7 @@ class Message extends Component {
       <div>
       {this.props.messages.map((message) => {
         return(
-        <div className="message" key={message.id}>
+        <div className="message" key={message.uniqueKey}>
         <span className="message-username">{message.username}</span>
         <span className="message-content">{message.content}</span>
       </div>
