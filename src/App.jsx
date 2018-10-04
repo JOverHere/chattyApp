@@ -9,25 +9,23 @@ class App extends Component {
     super(props);
     this.state = {
       id: [],
-      currentUser: {name: "Joe"},
-      messages: [] // messages coming from the server will be stored here as they arrive
+      currentUser: {name: "Jenna"},
+      messages: []
 
     };
   }
 
 addMessage = content => {
+  if(content.username !== this.state.currentUser){
+    this.setState({currentUser: {name: content.username}})
+  }
+
   const message = {
     username: this.state.currentUser.name,
-    content:content.content
+    content:content.content,
+    type: content.type
   };
-   // const messages = this.state.messages.concat(message)
-   // this.setState({messages: messages})
    this.mySocket.send(JSON.stringify(message));
-}
-
-handleNameChange = (changeValue) => {
-  const updatedName = changeValue.target.value;
-  this.setState({currentUser: {name: updatedName}})
 }
 
 componentDidMount() {
@@ -42,10 +40,25 @@ componentDidMount() {
 
   this.mySocket.onmessage = (event) => {
     const newMessage = JSON.parse(event.data);
+      const updatedMessages = this.state.messages.concat(newMessage);
+      this.setState({messages: updatedMessages});
 
-    const updatedMessages = this.state.messages.concat(newMessage)
-    this.setState({messages: updatedMessages})
 
+    // switch (newMessage.type) {
+
+  //     case "userUpdate":
+  //     console.log("user has been updated")
+  //     break;
+
+  //     case "messageUpdate":
+  //     const updatedMessages = this.state.messages.concat(newMessage);
+  //     this.setState({messages: updatedMessages});
+  //     console.log("updated messages")
+  //     break;
+
+  //     default:
+  //     console.log(newMessage, "Whatttt are you doing?! Check your code lady.. ")
+  // }
  }
 }
 
@@ -55,7 +68,7 @@ componentDidMount() {
       <div>
   <NavBar/>
   <MessageList messages={this.state.messages}/>
-  <ChatBar currentUser={this.state.currentUser.name} addMessage={this.addMessage} onNameChange={this.handleNameChange}/>
+  <ChatBar currentUser={this.state.currentUser.name} addMessage={this.addMessage}/>
   </div>
     );
   }
