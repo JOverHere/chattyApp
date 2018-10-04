@@ -10,8 +10,8 @@ class App extends Component {
     this.state = {
       id: [],
       currentUser: {name: "Jenna"},
-      messages: []
-
+      messages: [],
+      userCount: 0
     };
   }
 
@@ -28,6 +28,10 @@ addMessage = content => {
    this.mySocket.send(JSON.stringify(message));
 }
 
+if(userCountUpdate){
+  this.setState({userCount: message.userCount})
+}
+
 componentDidMount() {
   console.log("componentDidMount <App />");
 
@@ -40,8 +44,18 @@ componentDidMount() {
 
   this.mySocket.onmessage = (event) => {
     const newMessage = JSON.parse(event.data);
+        console.log(newMessage)
       const updatedMessages = this.state.messages.concat(newMessage);
-      this.setState({messages: updatedMessages});
+
+      //compares type of usercount, sets state
+
+      if(newMessage.type === "userCountUpdate"){
+        this.setState({userCount: newMessage.userCount});
+      } else {
+        this.setState({messages: updatedMessages});
+      }
+
+      console.log(this.state.messages);
 
 
     // switch (newMessage.type) {
@@ -66,7 +80,7 @@ componentDidMount() {
   render() {
     return (
       <div>
-  <NavBar/>
+  <NavBar userCount={this.state.userCount}/>
   <MessageList messages={this.state.messages}/>
   <ChatBar currentUser={this.state.currentUser.name} addMessage={this.addMessage}/>
   </div>
@@ -74,43 +88,5 @@ componentDidMount() {
   }
 }
 
-// class NavBar extends Component {
-//   render(){
-//     return (
-//     <nav className="navbar">
-//         <a href="/" className="navbar-brand">Chatty</a>
-//       </nav>
-//       );
-//   }
-// }
-
-// class Messages extends Component {
-//   render(){
-//     return(
-//     <main className="messages">
-//       <div className="message">
-//        <span className="message-username">Anonymous1</span>
-//        <span className="message-content">I won't be impressed with technology until I can download food.</span>
-//       </div>
-//      <div className="message system">
-//        Anonymous1 changed their name to nomnom.
-//      </div>
-//     </main>
-
-//       )
-//   }
-// }
-
-// class FormInput extends Component {
-//   render(){
-//     return(
-//       <footer className="chatbar">
-//         <input className="chatbar-username" placeholder="Your Name (Optional)" />
-//         <input className="chatbar-message" placeholder="Type a message and hit ENTER" />
-//       </footer>
-
-//       )
-//   }
-// }
 
 export default App;
